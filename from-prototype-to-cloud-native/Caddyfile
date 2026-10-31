@@ -1,0 +1,10 @@
+# Caddyfile: Caddy gets and renews the TLS certificates for these names.
+# Keep its /data on a volume, or each restart asks for new ones.
+# Both replicas and Caddy share a private Podman network. Port 8080 (probes
+# and /metrics) is never published, so only this network reaches it.
+myapp.example.com {
+    reverse_proxy myapp-blue:8000  # live
+}
+preview.myapp.example.com {
+    reverse_proxy myapp-green:8000  # the new version, before the switch
+}

@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+.pytest_cache/
+node_modules/
+build/
+.svelte-kit/
+static/
+.edge-Caddyfile-*
+.ruff_cache/
+.Caddyfile.local
+.compose.local.yaml

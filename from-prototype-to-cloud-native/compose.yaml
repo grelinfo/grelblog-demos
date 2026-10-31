@@ -1,0 +1,33 @@
+# compose.yaml: Postgres, two replicas and Caddy on one network.
+x-app: &app
+  build: {context: ., dockerfile: Containerfile}
+  image: myapp
+  restart: on-failure
+  stop_grace_period: 40s
+  depends_on:
+    db: {condition: service_healthy}
+  environment:
+    GREL_ENVIRONMENT: production
+    POSTGRES_URL: postgresql://postgres:secret@db:5432/postgres
+
+services:
+  db:
+    image: docker.io/library/postgres:17-alpine
+    environment:
+      POSTGRES_PASSWORD: secret
+    volumes: [db:/var/lib/postgresql/data]
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 2s
+  myapp-blue: *app
+  myapp-green: *app
+  caddy:
+    image: docker.io/library/caddy:2-alpine
+    ports: ["80:80", "443:443"]
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+
+volumes:
+  db:
+  caddy-data:

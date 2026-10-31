@@ -1,0 +1,3 @@
+# Tests are not shown in the posts, so they get a wider line.
+extend = "../pyproject.toml"
+line-length = 100

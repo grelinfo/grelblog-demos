@@ -1,0 +1,28 @@
+[project]
+name = "prototype-demo"
+version = "0"
+description = "Runnable demo for the blog series From prototype to cloud-native app with grelmicro."
+requires-python = ">=3.14"
+dependencies = [
+    "grelmicro[fastapi,sqlite,postgres]>=0.44.2",
+    "fastapi[standard]>=0.138",  # app.frontend()
+]
+
+[dependency-groups]
+dev = ["pytest", "httpx", "ruff", "ty"]
+
+[tool.uv]
+package = false
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# The compose tests need Podman: uv run pytest -m compose
+addopts = "-m 'not compose'"
+markers = ["compose: runs compose.yaml with Podman"]
+
+[tool.ruff]
+line-length = 68  # the posts show this code on phones
+
+[tool.ruff.lint]
+# Light on purpose: real bugs, imports and modern syntax, no docstring or style rules.
+select = ["F", "E", "I", "UP", "B"]
