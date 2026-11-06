@@ -1,6 +1,6 @@
 # From prototype to cloud-native app with grelmicro
 
-Runnable code for the blog series of the same name on [blog.grel.info](https://blog.grel.info). It covers the published parts so far, and every code block in them comes from here.
+Runnable code for the blog series of the same name on [blog.grel.info](https://blog.grel.info). Every code block in the posts comes from here.
 
 The app is a small solar home: a FastAPI backend and a Svelte single-page app. Every 10 seconds, it reads an inverter and switches a water heater on solar surplus. The device calls are stubs: they return a fixed reading and log the switch.
 
@@ -10,8 +10,11 @@ The app is a small solar home: a FastAPI backend and a Svelte single-page app. E
 |---|---|---|
 | 1 | `steps/1_prototype.py` | One container, SQLite, a task that runs every 10 s |
 | 2 | `steps/2_scalable.py` | Postgres, health checks and a private ops port, so several replicas can run |
+| 3 | `steps/3_resilient.py` | A fallback, a circuit breaker, a shared rate limit and a timeout on the inverter call |
+| 4 | `steps/4_observable.py` | Prometheus metrics on the ops port |
+| 5 | `steps/5_faster.py` | One cached inverter reading, shared by every replica |
 
-`main.py` is day two.
+`main.py` is day five.
 
 ## Run one container
 
@@ -24,13 +27,14 @@ podman run -d --name myapp -p 8000:8000 -v myapp-data:/data myapp
 curl localhost:8000/api/solar
 ```
 
-Run `git checkout main.py` to get day two back.
+Run `git checkout main.py` to get day five back.
 
 ## Run two replicas
 
 From day two, the app needs Postgres. `compose.yaml` starts Postgres, two replicas and Caddy. The Caddyfile serves `myapp.example.com` from blue and `preview.myapp.example.com` from green, with real certificates. To try it on a laptop, serve plain HTTP on localhost:
 
 ```bash
+cp steps/2_scalable.py main.py     # or any later day
 sed -i.bak -e 's/^preview.myapp.example.com {/http:\/\/preview.localhost {/' \
   -e 's/^myapp.example.com {/http:\/\/localhost {/' Caddyfile
 podman build -t myapp .
@@ -45,7 +49,7 @@ Port 80 needs root on some systems. If it fails, change `"80:80"` to `"8080:80"`
 
 ```bash
 (cd frontend && npm ci && npm run build)
-uv run pytest              # both days run, probes, SPA, task
+uv run pytest              # every day runs, guards and fallback behave
 uv run pytest -m compose   # compose.yaml with Podman: Caddy, private /metrics, one run per tick, preview and switch
 uv run ruff check . && uv run ty check
 ```

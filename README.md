@@ -4,7 +4,7 @@ Runnable code behind the posts on [blog.grel.info](https://blog.grel.info). Ever
 
 ## From prototype to cloud-native app with grelmicro
 
-[`from-prototype-to-cloud-native/`](from-prototype-to-cloud-native/) is a small solar home app: a FastAPI backend and a Svelte single-page app that read an inverter and switch a water heater. It grows one day at a time, from one container to two replicas on a shared Postgres. Its [README](from-prototype-to-cloud-native/README.md) shows how to run it.
+[`from-prototype-to-cloud-native/`](from-prototype-to-cloud-native/) is a small solar home app: a FastAPI backend and a Svelte single-page app that read an inverter and switch a water heater. It grows one day at a time, from one container to replicas on a shared Postgres, then guards, metrics and a cache. Its [README](from-prototype-to-cloud-native/README.md) shows how to run it.
 
 ## License
 

@@ -27,7 +27,7 @@ def start(
 ) -> Iterator[Callable[[Path], TestClient]]:
     """Run an app file as it is, with its database in a temporary SQLite file.
 
-    Day two uses PostgresProvider. Here it is swapped for SQLite so the unit tests
+    Steps 2 to 5 use PostgresProvider. Here it is swapped for SQLite so the unit tests
     need no server. `pytest -m compose` runs them on a real Postgres.
     """
     from grelmicro.providers import postgres, sqlite
@@ -63,8 +63,14 @@ def start(
 
 @pytest.fixture
 def client(start: Callable[[Path], TestClient]) -> TestClient:
-    """The final app, main.py (day two)."""
+    """The final app, main.py (step 5)."""
     return start(DEMO / "main.py")
+
+
+@pytest.fixture
+def day_four(start: Callable[[Path], TestClient]) -> TestClient:
+    """Day four, before the cache: every read reaches the breaker."""
+    return start(DEMO / "steps" / "4_observable.py")
 
 
 @pytest.fixture

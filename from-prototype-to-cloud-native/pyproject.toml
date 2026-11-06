@@ -4,7 +4,7 @@ version = "0"
 description = "Runnable demo for the blog series From prototype to cloud-native app with grelmicro."
 requires-python = ">=3.14"
 dependencies = [
-    "grelmicro[fastapi,sqlite,postgres]>=0.44.2",
+    "grelmicro[fastapi,sqlite,postgres,opentelemetry]>=0.44.2",
     "fastapi[standard]>=0.138",  # app.frontend()
 ]
 
